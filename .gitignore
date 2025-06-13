@@ -1,0 +1,12 @@
+# Ignore virtual environments
+ai_doctor_env/
+doctor/
+__pycache__/
+*.pyc
+
+# Ignore sensitive files
+.env
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
