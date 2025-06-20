@@ -84,7 +84,7 @@ def text_to_speech_with_gtts(input_text, output_filepath_mp3):
     except Exception as e:
         print(f"Playback error: {e}")
 
-text_to_speech_with_gtts("Testing WAV conversion!", "gtts_testing_autoplay.mp3")
+#text_to_speech_with_gtts("Testing WAV conversion!", "gtts_testing_autoplay.mp3")
 
 
 # Load your ElevenLabs API key
@@ -92,28 +92,27 @@ load_dotenv()
 ELEVEN_LABS_API_KEY = os.getenv("ELEVEN_LABS_API_KEY")
 client = ElevenLabs(api_key=ELEVEN_LABS_API_KEY)
 
-def text_to_speech_with_elevenlabs(input_text, output_filepath_mp3=None):
+def text_to_speech_with_elevenlabs(input_text, output_filepath="output.mp3"):
     audio_generator = client.text_to_speech.convert(
         text=input_text,
-        voice_id="9BWtsMINqrJLrRacOk9x",  # Replace with your own
+        voice_id="9BWtsMINqrJLrRacOk9x",  # Replace with your own if needed
         model_id="eleven_turbo_v2",
         output_format="mp3_44100_128"
     )
 
-    if output_filepath_mp3:
+    if output_filepath:
         # Save MP3
-        with open(output_filepath_mp3, "wb") as f:
+        with open(output_filepath, "wb") as f:
             for chunk in audio_generator:
                 if isinstance(chunk, bytes):
                     f.write(chunk)
 
-        # Convert MP3 to WAV
-        wav_path = output_filepath_mp3.replace(".mp3", ".wav")
+        # Convert MP3 to WAV and play
+        wav_path = output_filepath.replace(".mp3", ".wav")
         try:
-            sound = AudioSegment.from_mp3(output_filepath_mp3)
+            sound = AudioSegment.from_mp3(output_filepath)
             sound.export(wav_path, format="wav")
 
-            # Play the WAV file
             os_name = platform.system()
             if os_name == "Windows":
                 subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{wav_path}").PlaySync();'])
@@ -124,6 +123,5 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath_mp3=None):
         except Exception as e:
             print(f"Error during conversion or playback: {e}")
     else:
-        # Just stream and play
         play(audio_generator)
-text_to_speech_with_elevenlabs("Hello! This is ElevenLabs speaking.", output_filepath_mp3="eleven_labs_test.mp3")
+#text_to_speech_with_elevenlabs("Hello! This is ElevenLabs speaking.", output_filepath_mp3="eleven_labs_test.mp3")
